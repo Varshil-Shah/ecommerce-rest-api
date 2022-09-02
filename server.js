@@ -1,4 +1,10 @@
 /* eslint-disable no-console */
+process.on('uncaughtException', (error) => {
+  console.log('Uncaught Exception Occurred');
+  console.log({ unhandledRejectionError: error });
+  process.exit(1);
+});
+
 const app = require('./app');
 
 const PORT = process.env.PORT || 3000;
