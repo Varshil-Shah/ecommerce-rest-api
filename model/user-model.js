@@ -139,6 +139,12 @@ UserSchema.pre('save', async function (next) {
   next();
 });
 
+// METHODS
+
+UserSchema.methods.verifyPassword = async function (password, hashPassword) {
+  return await brcypt.compare(password, hashPassword);
+};
+
 const UserModel = mongoose.model('Users', UserSchema);
 
 module.exports = UserModel;
