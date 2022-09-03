@@ -5,6 +5,7 @@ const app = express();
 
 const userRoute = require('./routes/user-route');
 const categoryRoute = require('./routes/category-route');
+const globalErrorHandler = require('./controller/error-controller');
 
 app.use(express.json({ limit: '15kb' }));
 
@@ -18,5 +19,7 @@ app.use('*', (req, res, next) => {
   // eslint-disable-next-line no-console
   res.send({ message: `Cannot found ${req.originalUrl} on server.` });
 });
+
+app.use(globalErrorHandler);
 
 module.exports = app;
