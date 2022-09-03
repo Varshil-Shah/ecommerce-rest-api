@@ -8,7 +8,10 @@ const UserSchema = mongoose.Schema({
       default: 'Point',
       enum: ['Point'],
     },
-    coordinates: [Number],
+    coordinates: {
+      type: [Number],
+      required: [true, 'Please specify coordinates'],
+    },
     street: {
       type: String,
       trim: true,
@@ -28,7 +31,7 @@ const UserSchema = mongoose.Schema({
       type: Number,
       required: false,
       validate: {
-        validator: (value) => Number.isNaN(value),
+        validator: (value) => !Number.isNaN(value),
         message: 'Please enter a valid zipcode',
       },
     },
@@ -67,23 +70,34 @@ const UserSchema = mongoose.Schema({
     trim: true,
     required: [true, 'Please provide a email address.'],
     validate: {
-      validator: (value) => !validator.isEmail(value),
+      validator: (value) => validator.isEmail(value),
       message: 'Please enter a valid email address.',
     },
   },
   role: {
     type: String,
+    default: 'user',
     enum: ['admin', 'user'],
-    required: [true, 'Please provide a valid role.'],
   },
   password: {
     type: String,
     trim: true,
     required: [true, 'Please provide a password.'],
     validate: {
-      validator: (value) => !validator.isStrongPassword(value),
+      validator: (value) => validator.isStrongPassword(value),
       message:
         'Password must be at least 8 characters long, 1 Uppercase, 1 Lowercase and 1 special character',
+    },
+  },
+  confirmPassword: {
+    type: String,
+    trim: true,
+    required: [true, 'Please confirm your password.'],
+    validate: {
+      validator: function (value) {
+        return this.password === value;
+      },
+      message: 'Password and confirm password are not matching.',
     },
   },
   gender: {
@@ -93,6 +107,10 @@ const UserSchema = mongoose.Schema({
       values: ['male', 'female', 'other'],
       message: 'Please provide a valid gender',
     },
+  },
+  active: {
+    type: Boolean,
+    default: true,
   },
 });
 
