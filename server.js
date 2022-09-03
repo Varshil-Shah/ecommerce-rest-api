@@ -17,8 +17,6 @@ const MONGO_DATABASE_URL = process.env.MONGO_DATABASE_URL.replace(
   process.env.MONGO_DATABASE_PASSWORD
 ).replace('USER', process.env.MONGO_DATABASE_USER);
 
-console.log({ MONGO_DATABASE_URL });
-
 mongoose
   .connect(MONGO_DATABASE_URL)
   .then(() => {
