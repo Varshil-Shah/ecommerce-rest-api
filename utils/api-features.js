@@ -44,9 +44,24 @@ const sortData = (sortQuery) => {
   return sortedObject;
 };
 
+// Project selected fields
+const projectData = (projectQuery) => {
+  const projectObject = {};
+
+  if (projectQuery.fields) {
+    const projectFields = projectQuery.fields.split(',');
+    projectFields.forEach((field) => {
+      projectObject[field.trim()] = 1;
+    });
+  }
+
+  return projectObject;
+};
+
 const APIFeaturesAggregation = (query, model, mapOfFilters) => {
   const filteredValue = filterData(query, mapOfFilters);
   const sortedValue = sortData(query);
+  const projectValues = projectData(query);
 
   const listOfAggregates = [
     {
@@ -56,6 +71,10 @@ const APIFeaturesAggregation = (query, model, mapOfFilters) => {
       $sort: sortedValue,
     },
   ];
+
+  // If projectValues object contains some object, then push it to listOfAggregates
+  if (Object.keys(projectValues).length)
+    listOfAggregates.push({ $project: projectValues });
 
   return model.aggregate(listOfAggregates);
 };
