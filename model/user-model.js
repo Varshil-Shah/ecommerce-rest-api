@@ -53,12 +53,14 @@ const UserSchema = mongoose.Schema(
         trim: true,
         required: [true, 'Please provide a first name.'],
         maxlength: [30, 'Maximum 30 characters allowed for first name.'],
+        lowercase: true,
       },
       lastName: {
         type: String,
         trim: true,
         required: [true, 'Please provide a last name.'],
         maxlength: [30, 'Maximum 30 characters allowed for last name.'],
+        lowercase: true,
       },
     },
     username: {
@@ -67,6 +69,7 @@ const UserSchema = mongoose.Schema(
       trim: true,
       required: [true, 'Please provide a username.'],
       minlength: [8, 'Minimum 8 characters required for username.'],
+      lowercase: true,
     },
     email: {
       type: String,
@@ -77,6 +80,7 @@ const UserSchema = mongoose.Schema(
         validator: (value) => validator.isEmail(value),
         message: 'Please enter a valid email address.',
       },
+      lowercase: true,
     },
     role: {
       type: String,
