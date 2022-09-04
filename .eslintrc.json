@@ -1,8 +1,7 @@
 {
   "extends": [
     "airbnb",
-    "prettier",
-    "plugin:node/recommended"
+    "prettier"
   ],
   "plugins": [
     "prettier"
@@ -19,6 +18,8 @@
     "no-return-await": "off",
     "no-underscore-dangle": "off",
     "class-methods-use-this": "off",
+    "prefer-arrow-callback": "off",
+    "no-restricted-syntax": "off",
     "prefer-destructuring": [
       "error",
       {
