@@ -3,9 +3,9 @@ const {
   advanceQueryFiltering,
 } = require('../helper/api-function');
 
-// Filter Object
-const filterObject = (filterQuery, mapOfFilters) => {
-  let copyOfFilterQuery = { ...filterQuery };
+// Filter data
+const filterData = (queryObject, mapOfFilters) => {
+  let copyOfFilterQuery = { ...queryObject };
 
   // fields which shoulld be execluded from filterObject
   const excludedFields = ['page', 'sort', 'fields', 'limit'];
@@ -22,11 +22,38 @@ const filterObject = (filterQuery, mapOfFilters) => {
   return copyOfFilterQuery;
 };
 
+// Sort data
+const sortData = (sortQuery) => {
+  const sortedObject = {};
+
+  // check if sort query is present or not
+  if (sortQuery.sort) {
+    const sortQueryValues = sortQuery.sort.split(',');
+    sortQueryValues.forEach((element) => {
+      if (element.startsWith('-')) {
+        const value = element.split('-')[1];
+        sortedObject[value] = -1;
+      } else {
+        sortedObject[element] = 1;
+      }
+    });
+  } else {
+    sortedObject.createdAt = -1;
+  }
+
+  return sortedObject;
+};
+
 const APIFeaturesAggregation = (query, model, mapOfFilters) => {
-  const filteredObjects = filterObject(query, mapOfFilters);
+  const filteredValue = filterData(query, mapOfFilters);
+  const sortedValue = sortData(query);
+
   const listOfAggregates = [
     {
-      $match: filteredObjects,
+      $match: filteredValue,
+    },
+    {
+      $sort: sortedValue,
     },
   ];
 
