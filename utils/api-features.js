@@ -58,10 +58,20 @@ const projectData = (projectQuery) => {
   return projectObject;
 };
 
+// Pagination
+const pagination = (paginationQuery) => {
+  const page = Math.abs(paginationQuery.page * 1) || 1;
+  const limit = paginationQuery.limit * 1 || 15;
+  const skip = (page - 1) * limit;
+
+  return [limit, skip];
+};
+
 const APIFeaturesAggregation = (query, model, mapOfFilters) => {
   const filteredValue = filterData(query, mapOfFilters);
   const sortedValue = sortData(query);
   const projectValues = projectData(query);
+  const [limit, skip] = pagination(query);
 
   const listOfAggregates = [
     {
@@ -69,6 +79,12 @@ const APIFeaturesAggregation = (query, model, mapOfFilters) => {
     },
     {
       $sort: sortedValue,
+    },
+    {
+      $limit: limit,
+    },
+    {
+      $skip: skip,
     },
   ];
 
