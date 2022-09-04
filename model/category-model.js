@@ -36,8 +36,38 @@ const CategorySchema = mongoose.Schema(
 CategorySchema.pre(/^find/, function (next) {
   this.populate({
     path: 'creator',
-    select: '-location -password -gender -createdAt -updatedAt -active -__v',
+    select:
+      '-location -password -gender -createdAt -updatedAt -active -__v -role',
   });
+  next();
+});
+
+CategorySchema.pre('aggregate', function (next) {
+  this.pipeline().unshift(
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'creator',
+        foreignField: '_id',
+        as: 'creator',
+      },
+    },
+    {
+      $unwind: '$creator',
+    },
+    {
+      $project: {
+        'creator.location': 0,
+        'creator.password': 0,
+        'creator.gender': 0,
+        'creator.createdAt': 0,
+        'creator.updatedAt': 0,
+        'creator.active': 0,
+        'creator.__v': 0,
+        'creator.role': 0,
+      },
+    }
+  );
   next();
 });
 
