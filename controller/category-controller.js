@@ -78,7 +78,31 @@ exports.getCategory = catchAsync(async (req, res, next) => {
   const { id } = req.params;
   const category = await Category.findById(id);
 
-  // If category doesn't exist, return error message
+  // If category doesn't exist, send error message
+  if (!category) {
+    return next(
+      new AppError('No category found with this Id', StatusCode.BAD_REQUEST)
+    );
+  }
+
+  res.status(StatusCode.OK).json({
+    status: 'success',
+    data: {
+      category,
+    },
+  });
+});
+
+exports.updateCategory = catchAsync(async (req, res, next) => {
+  // Get Id from params
+  const { id } = req.params;
+
+  // Get category from provided Id
+  const category = await Category.findByIdAndUpdate(id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
   if (!category) {
     return next(
       new AppError('No category found with this Id', StatusCode.BAD_REQUEST)
