@@ -36,8 +36,7 @@ const CategorySchema = mongoose.Schema(
 CategorySchema.pre(/^find/, function (next) {
   this.populate({
     path: 'creator',
-    select:
-      '-location -password -gender -createdAt -updatedAt -active -__v -role',
+    select: '-location -password -gender -createdAt -updatedAt -active -__v',
   });
   next();
 });
@@ -64,7 +63,6 @@ CategorySchema.pre('aggregate', function (next) {
         'creator.updatedAt': 0,
         'creator.active': 0,
         'creator.__v': 0,
-        'creator.role': 0,
       },
     }
   );
