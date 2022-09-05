@@ -120,6 +120,9 @@ const UserSchema = mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpiresAt: Date,
   },
   {
     timestamps: true,
