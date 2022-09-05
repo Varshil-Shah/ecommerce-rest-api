@@ -32,15 +32,6 @@ const CategorySchema = mongoose.Schema(
   }
 );
 
-// QUERY MIDDLEWARE
-CategorySchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'creator',
-    select: '-location -password -gender -createdAt -updatedAt -active -__v',
-  });
-  next();
-});
-
 CategorySchema.pre('aggregate', function (next) {
   this.pipeline().unshift(
     {
