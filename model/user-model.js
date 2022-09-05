@@ -149,6 +149,19 @@ UserSchema.methods.verifyPassword = async function (password, hashPassword) {
   return await brcypt.compare(password, hashPassword);
 };
 
+UserSchema.methods.changedPasswordAfterAssigningToken = function (
+  JWTTimeStamp
+) {
+  if (this.passwordChangeAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangeAt.getTime() / 1000,
+      10
+    );
+    return JWTTimeStamp < changedTimestamp;
+  }
+  return false;
+};
+
 const UserModel = mongoose.model('Users', UserSchema);
 
 module.exports = UserModel;
