@@ -49,7 +49,7 @@ exports.createCategory = catchAsync(async (req, res) => {
   const category = await Category.create({
     name: req.body.name,
     image: req.body.image,
-    creator: req.body.creator,
+    creator: req.user._id,
   });
 
   res.status(StatusCode.CREATED).json({
@@ -110,6 +110,27 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
   }
 
   res.status(StatusCode.OK).json({
+    status: 'success',
+    data: {
+      category,
+    },
+  });
+});
+
+exports.deleteCategory = catchAsync(async (req, res, next) => {
+  // Get Id from params
+  const { id } = req.params;
+
+  // Get category from provided Id
+  const category = await Category.findByIdAndDelete(id);
+
+  if (!category) {
+    return next(
+      new AppError('No category found with this Id', StatusCode.BAD_REQUEST)
+    );
+  }
+
+  res.status(StatusCode.NO_CONTENT).json({
     status: 'success',
     data: {
       category,

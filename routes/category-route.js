@@ -12,6 +12,10 @@ router
 router
   .route('/:id')
   .get(CategoryController.getCategory)
-  .patch(CategoryController.protectCategory, CategoryController.updateCategory);
+  .patch(CategoryController.protectCategory, CategoryController.updateCategory)
+  .delete(
+    CategoryController.protectCategory,
+    CategoryController.deleteCategory
+  );
 
 module.exports = router;
