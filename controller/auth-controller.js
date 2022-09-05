@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { promisify } = require('util');
 
 const User = require('../model/user-model');
 const catchAsync = require('../utils/catch-async');
@@ -11,17 +12,9 @@ const signJWTToken = (id) =>
   });
 
 const createAndSendJWTToken = (user, statusCode, res) => {
-  const cookieOptions = {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
-    httpOnly: true,
-  };
-  if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
-
   const token = signJWTToken(user._id);
 
-  res.cookie('jwt', token, cookieOptions);
+  res.cookie('jwt', token, { maxAge: 2 * 60 * 60 * 1000, httpOnly: true });
 
   // Remove password from the output
   user.password = undefined;
@@ -85,4 +78,57 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // finally, if everything is OK send the token and user data back
   createAndSendJWTToken(user, StatusCode.OK, res);
+});
+
+exports.protect = catchAsync(async (req, res, next) => {
+  let token;
+
+  // check if the token exists
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  // if no token found, that means the user is not logged in
+  if (!token) {
+    return next(
+      new AppError(
+        'You are not logged in! Please login to get access',
+        StatusCode.UNAUTHORIZED
+      )
+    );
+  }
+
+  // verify if the token is correct or not
+  const decoded = await promisify(jwt.verify)(
+    token,
+    process.env.JWT_SECRET_KEY
+  );
+
+  // Get id from the decoded variable and check if user exists
+  const user = await User.findById(decoded.id);
+
+  if (!user) {
+    return next(
+      new AppError(
+        'User belonging to the token does not exist!',
+        StatusCode.UNAUTHORIZED
+      )
+    );
+  }
+
+  // check if the user has changed their password AFTER assigning the token
+  if (user.changedPasswordAfterAssigningToken(decoded.iat)) {
+    return next(
+      new AppError(
+        'Password changed after assigning the token. Please login again.',
+        StatusCode.UNAUTHORIZED
+      )
+    );
+  }
+
+  req.user = user;
+  next();
 });
