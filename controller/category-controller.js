@@ -51,7 +51,7 @@ exports.getCategory = catchAsync(async (req, res, next) => {
   // If category doesn't exist, send error message
   if (!category) {
     return next(
-      new AppError('No category found with this Id', StatusCode.BAD_REQUEST)
+      new AppError('No category found with this Id', StatusCode.NOT_FOUND)
     );
   }
 
@@ -75,7 +75,7 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
 
   if (!category) {
     return next(
-      new AppError('No category found with this Id', StatusCode.BAD_REQUEST)
+      new AppError('No category found with this Id', StatusCode.NOT_FOUND)
     );
   }
 
@@ -96,7 +96,7 @@ exports.deleteCategory = catchAsync(async (req, res, next) => {
 
   if (!category) {
     return next(
-      new AppError('No category found with this Id', StatusCode.BAD_REQUEST)
+      new AppError('No category found with this Id', StatusCode.NOT_FOUND)
     );
   }
 

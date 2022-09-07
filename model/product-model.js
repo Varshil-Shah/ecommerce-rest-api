@@ -13,7 +13,7 @@ const ProductSchema = mongoose.Schema(
       maxlength: [30, 'Maximum 30 characters allowed for product title.'],
       validate: {
         validator: function (value) {
-          return /^[a-zA-Z0-9]*$/.test(value);
+          return /^[a-zA-Z0-9 ]*$/.test(value);
         },
         message: 'A product name should contain only alphabets or number',
       },

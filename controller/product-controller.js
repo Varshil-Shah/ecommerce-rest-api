@@ -35,9 +35,7 @@ exports.getProduct = catchAsync(async (req, res, next) => {
   const product = await Product.findById(id);
 
   if (!product) {
-    return next(
-      new AppError('No product with this Id', StatusCode.BAD_REQUEST)
-    );
+    return next(new AppError('No product with this Id', StatusCode.NOT_FOUND));
   }
 
   res.status(StatusCode.OK).json({
@@ -45,5 +43,36 @@ exports.getProduct = catchAsync(async (req, res, next) => {
     data: {
       product,
     },
+  });
+});
+
+// update the product with given Id
+exports.updateProduct = catchAsync(async (req, res, next) => {
+  const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!product) {
+    return next(new AppError('No product with this Id', StatusCode.NOT_FOUND));
+  }
+
+  res.status(StatusCode.OK).json({
+    status: 'success',
+    data: { product },
+  });
+});
+
+// update the product with given Id
+exports.deleteProduct = catchAsync(async (req, res, next) => {
+  const product = await Product.findByIdAndDelete(req.params.id);
+
+  if (!product) {
+    return next(new AppError('No product with this Id', StatusCode.NOT_FOUND));
+  }
+
+  res.status(StatusCode.NO_CONTENT).json({
+    status: 'success',
+    data: { product },
   });
 });
