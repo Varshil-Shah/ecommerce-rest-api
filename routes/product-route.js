@@ -6,4 +6,6 @@ router.use(AuthController.protect);
 
 router.route('/').get(ProductController.getAllProducts);
 
+router.route('/:id').get(ProductController.getProduct);
+
 module.exports = router;
