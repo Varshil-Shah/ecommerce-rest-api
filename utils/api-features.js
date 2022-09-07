@@ -1,6 +1,7 @@
 const {
   queryFiltering,
   advanceQueryFiltering,
+  convertNumericStringToNumber,
 } = require('../helper/api-function');
 
 // Filter data
@@ -18,6 +19,8 @@ const filterData = (queryObject, mapOfFilters) => {
   copyOfFilterQuery = advanceQueryFiltering(JSON.stringify(copyOfFilterQuery));
 
   copyOfFilterQuery = queryFiltering(mapOfFilters, copyOfFilterQuery);
+
+  copyOfFilterQuery = convertNumericStringToNumber(copyOfFilterQuery);
 
   return copyOfFilterQuery;
 };
@@ -75,16 +78,16 @@ const APIFeaturesAggregation = (query, model, mapOfFilters) => {
 
   const listOfAggregates = [
     {
-      $match: filteredValue,
-    },
-    {
-      $sort: sortedValue,
+      $skip: skip,
     },
     {
       $limit: limit,
     },
     {
-      $skip: skip,
+      $match: filteredValue,
+    },
+    {
+      $sort: sortedValue,
     },
   ];
 
