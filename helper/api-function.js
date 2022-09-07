@@ -22,9 +22,33 @@ exports.queryFiltering = (map, query) => {
       } else {
         query[map.get(key)] = value;
       }
+      delete query[key];
+    } else {
+      query[key] = value;
     }
-    delete query[key];
   });
 
   return query;
+};
+
+/**
+ * Converts all numeric string values to number till 2 level of object scanning
+ * @param {Object} obj
+ * @returns {Object}
+ */
+exports.convertNumericStringToNumber = (obj) => {
+  const res = {};
+  for (const key in obj) {
+    if (typeof obj[key] === 'object') {
+      res[key] = {};
+      for (const prop in obj[key]) {
+        const parsed = parseInt(obj[key][prop], 10);
+        res[key][prop] = Number.isNaN(parsed) ? obj[key][prop] : parsed;
+      }
+      continue;
+    }
+    const parsed = parseInt(obj[key], 10);
+    res[key] = Number.isNaN(parsed) ? obj[key] : parsed;
+  }
+  return res;
 };
