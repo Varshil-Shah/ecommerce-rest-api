@@ -20,6 +20,8 @@
     "class-methods-use-this": "off",
     "prefer-arrow-callback": "off",
     "no-restricted-syntax": "off",
+    "guard-for-in": "off",
+    "no-continue": "off",
     "prefer-destructuring": [
       "error",
       {
