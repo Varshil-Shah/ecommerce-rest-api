@@ -80,6 +80,61 @@ const ProductSchema = mongoose.Schema(
   }
 );
 
+ProductSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'category',
+    select: '-creator -createdAt -updatedAt -__v',
+  }).populate({
+    path: 'creator',
+    select:
+      '-location -createdAt -updatedAt -role -gender -password -__v -active',
+  });
+  next();
+});
+
+ProductSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift(
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'creator',
+        foreignField: '_id',
+        as: 'creator',
+      },
+    },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'category',
+        foreignField: '_id',
+        as: 'category',
+      },
+    },
+    {
+      $unwind: '$category',
+    },
+    {
+      $unwind: '$creator',
+    },
+    {
+      $project: {
+        'creator.location': 0,
+        'creator.updatedAt': 0,
+        'creator.createdAt': 0,
+        'creator.role': 0,
+        'creator.gender': 0,
+        'creator.password': 0,
+        'creator.active': 0,
+        'creator.__v': 0,
+        'category.creator': 0,
+        'category.createdAt': 0,
+        'category.updatedAt': 0,
+      },
+    }
+  );
+  next();
+});
+
 const ProductModel = mongoose.model('Products', ProductSchema);
 
 module.exports = ProductModel;
