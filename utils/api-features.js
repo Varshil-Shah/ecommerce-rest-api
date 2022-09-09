@@ -78,13 +78,13 @@ const APIFeaturesAggregation = (query, model, mapOfFilters) => {
 
   const listOfAggregates = [
     {
+      $match: filteredValue,
+    },
+    {
       $skip: skip,
     },
     {
       $limit: limit,
-    },
-    {
-      $match: filteredValue,
     },
     {
       $sort: sortedValue,
