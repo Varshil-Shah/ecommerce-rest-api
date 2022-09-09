@@ -18,7 +18,12 @@ const MONGO_DATABASE_URL = process.env.MONGO_DATABASE_URL.replace(
 ).replace('USER', process.env.MONGO_DATABASE_USER);
 
 mongoose
-  .connect(MONGO_DATABASE_URL)
+  .connect(MONGO_DATABASE_URL, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log('Database connected successfully!');
   })
