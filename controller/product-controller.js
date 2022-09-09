@@ -17,6 +17,24 @@ const mapOfFilters = new Map([
   ['categoryName', 'category.name'],
 ]);
 
+exports.createProduct = catchAsync(async (req, res, next) => {
+  const product = await Product.create({
+    title: req.body.title,
+    price: req.body.price,
+    description: req.body.description,
+    category: req.body.category,
+    images: req.body.images,
+    creator: req.user._id,
+    rating: req.body.rating,
+    ratingCount: req.body.ratingCount,
+  });
+
+  res.status(StatusCode.CREATED).json({
+    status: 'success',
+    data: { product },
+  });
+});
+
 exports.getAllProducts = catchAsync(async (req, res, next) => {
   const products = await ApiFeatures(req.query, Product, mapOfFilters);
 

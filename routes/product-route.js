@@ -6,7 +6,10 @@ const { protectModel } = require('../controller/general-controller');
 
 router.use(AuthController.protect);
 
-router.route('/').get(ProductController.getAllProducts);
+router
+  .route('/')
+  .get(ProductController.getAllProducts)
+  .post(ProductController.createProduct);
 
 router
   .route('/:id')

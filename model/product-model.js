@@ -7,7 +7,6 @@ const ProductSchema = mongoose.Schema(
       type: String,
       lowercase: true,
       trim: true,
-      unique: true,
       required: [true, 'A product title is required!'],
       minlength: [10, 'Minimum 10 characters required for product title.'],
       maxlength: [30, 'Maximum 30 characters allowed for product title.'],
@@ -21,6 +20,7 @@ const ProductSchema = mongoose.Schema(
     price: {
       type: Number,
       required: [true, 'Product price is mandatory.'],
+      min: [1, 'Minimum required price is 1.'],
     },
     description: {
       type: String,
@@ -71,6 +71,7 @@ const ProductSchema = mongoose.Schema(
     ratingsCount: {
       type: Number,
       default: 0,
+      min: [0, 'Number of ratings must be positive number'],
     },
   },
   {
