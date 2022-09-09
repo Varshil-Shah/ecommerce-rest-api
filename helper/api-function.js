@@ -39,6 +39,11 @@ exports.queryFiltering = (map, query) => {
 exports.convertNumericStringToNumber = (obj) => {
   const res = {};
   for (const key in obj) {
+    // Ignore the conversion of all object Id
+    if (key.includes('_id')) {
+      res[key] = obj[key];
+      continue;
+    }
     if (typeof obj[key] === 'object') {
       res[key] = {};
       for (const prop in obj[key]) {
