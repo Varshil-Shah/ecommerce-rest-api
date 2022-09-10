@@ -132,3 +132,18 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = user;
   next();
 });
+
+exports.restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    // If the provided roles are present on current user, send error message
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError(
+          'You are not authorized to access this resource.',
+          StatusCode.UNAUTHORIZED
+        )
+      );
+    }
+    next();
+  };
