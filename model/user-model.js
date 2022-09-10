@@ -132,6 +132,21 @@ const UserSchema = mongoose.Schema(
 );
 
 // PRE MIDDLEWARES
+UserSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift(
+    {
+      $match: { active: { $ne: false } },
+    },
+    { $project: { password: 0 } }
+  );
+  next();
+});
+
+UserSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  this.select('-password');
+  next();
+});
 
 // This middleware is use to encrypt password whenever user signups
 UserSchema.pre('save', async function (next) {
