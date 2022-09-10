@@ -19,7 +19,7 @@ const UserSchema = mongoose.Schema(
       street: {
         type: String,
         trim: true,
-        required: [true, 'Please provide description.'],
+        required: [true, 'Please provide a valid street.'],
         minlength: [10, 'Minimum 10 characters required for street.'],
         maxlength: [150, 'Maximum 150 characters allowed for street.'],
       },
